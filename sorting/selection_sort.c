@@ -20,6 +20,7 @@ static inline void swap(int *a, int *b) {
  *Complexity:
  *   - Comparisons: ~ n*(n-1)/2  (O(n^2))
  *   - Swaps: at most n-1         (O(n))
+ *
  * Partition the array into a sorted prefix and an unsorted suffix.
  * For each i from 0..n-2, find the minimum element in arr[i..n-1]
  * and place it at arr[i].
@@ -44,7 +45,7 @@ void selection_sort(int arr[], size_t len) {
 #include <stdio.h>
 
 int main() {
-  int array[] = {0, 5, 4, 3};
+  int array[] = {0, 5, 4, 3, 12, 0, 0, 1, 2};
   size_t len = sizeof(array) / sizeof(int);
   selection_sort(array, len);
   for (int i = 0; i < len; ++i) {

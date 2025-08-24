@@ -21,8 +21,9 @@ int main() {
   const int array[] = {1, 2, 3, 4, 5, 6};
 
   size_t len = sizeof(array) / sizeof(int);
-
-  printf("%td\n", finder(array, len, 12));
+  int num;
+  scanf("%d", &num);
+  printf("%td\n", finder(array, len, num));
 
   return 0;
 }
