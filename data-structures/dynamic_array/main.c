@@ -1,4 +1,3 @@
-
 // app.c
 #include "dynamic_array.h"
 #include <assert.h>

@@ -3,24 +3,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define VECTOR_INLINE_CAPACITY 4
+#define VDynamicArray_INLINE_CAPACITY 4
 
 typedef struct {
   size_t size;
   size_t capacity;
   size_t elem_size;
   void *data;
-  unsigned char buffer[VECTOR_INLINE_CAPACITY * sizeof(long long)];
-} Dynamic_Array;
+  unsigned char buffer[VDynamicArray_INLINE_CAPACITY * sizeof(long long)];
+} DynamicArray;
 
-void vector_init(Vector *v, size_t elem_size) {
+void DynamicArray_init(DynamicArray *v, size_t elem_size) {
   v->size = 0;
-  v->capacity = VECTOR_INLINE_CAPACITY;
+  v->capacity = VDynamicArray_INLINE_CAPACITY;
   v->elem_size = elem_size;
   v->data = v->buffer;
 }
 
-void push_back(Vector *v, void *value) {
+void push_back(DynamicArray *v, void *value) {
   if (v->size == v->capacity) {
     size_t new_capacity = v->capacity * 2;
     void *new_data;
@@ -39,17 +39,18 @@ void push_back(Vector *v, void *value) {
   ++v->size;
 }
 
-void vector_free(Vector *v) {
+void DynamicArray_free(DynamicArray *v) {
   if (v->data != v->buffer) {
     free(v->data);
   }
   v->data = NULL;
   v->size = v->capacity = 0;
 }
-#define VECTOR_AT(v, type, i) (((type *)(v).data)[(i)])
+#define DynamicArray_AT(v, type, i) (((type *)(v).data)[(i)])
 int main() {
-  Vector v;
-  vector_init(&v, sizeof(char));
+
+  DynamicArray v;
+  DynamicArray_init(&v, sizeof(char));
   char num = 0;
 entry:
   scanf("%c", &num);
@@ -59,6 +60,6 @@ entry:
   }
 
   for (size_t i = 0; i < v.size; ++i) {
-    printf("%c", VECTOR_AT(v, char, i));
+    printf("%c", DynamicArray_AT(v, char, i));
   }
 }
