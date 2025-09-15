@@ -4,19 +4,6 @@
 #include <stddef.h> // For size_t
 
 /*
- * Swap two integers in memory
- *
- * Params:
- *     a - pointer to first integer
- *     b - pointer to second integer
- *
- * Description:
- *     Exchanges the values stored at the addresses provided.
- *     The function asserts that the pointers are valid.
- */
-static inline void swap(int *a, int *b);
-
-/*
  * In-place Selection Sort
  *
  * Params:

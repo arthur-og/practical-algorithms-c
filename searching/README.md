@@ -35,12 +35,19 @@ Some require sorted input arrays, while others can work on unsorted collections.
 
 searching/
 │── linear_search.c
-│── binary_search_iterative.c
+
+│── binary_search_iterative.c 
+
 │── binary_search_recursive.c
+
 │── jump_search.c
+
 │── interpolation_search.c
+
 │── exponential_search.c
+
 │── README.md
+
 
 
 ## 🚀 How to Run

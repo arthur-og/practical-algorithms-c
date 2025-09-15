@@ -42,14 +42,20 @@ They can also be analyzed by:
 
 sorting/
 │── bubble_sort.c
+
 │── selection_sort.c
+
 │── insertion_sort.c
+
 │── merge_sort.c
+
 │── quick_sort.c
+
 <!--│── heap_sort.c
 │── counting_sort.c
 │── radix_sort.c -->
 │── README.md
+
 
 ## 🚀 How to Run
 Compile any file using `gcc`:
