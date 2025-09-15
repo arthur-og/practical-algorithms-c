@@ -1,0 +1,5 @@
+# Ignore executables in any folder
+**/*.out
+**/*.exe
+**/*.o
+**/*.a

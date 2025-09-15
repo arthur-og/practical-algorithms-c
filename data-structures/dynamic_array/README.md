@@ -19,12 +19,7 @@ Designed for predictable, fast, cache-friendly contiguous storage with safe inte
 * [Usage examples](#usage-examples)
 * [Design & semantics](#design--semantics)
 * [Error codes](#error-codes)
-* [Testing & benchmarks](#testing--benchmarks)
-* [Contributing](#contributing)
 * [License](#license)
-* [FAQ](#faq)
-* [CHANGELOG (starter)](#changelog-starter)
-
 ---
 
 ## Highlights
@@ -238,45 +233,6 @@ The API returns the following `da_status` values:
 
 Always check return values for functions that can fail.
 
----
-
-## Testing & benchmarks
-
-### Suggested tests (add to `tests/`)
-
-* Creation/destruction for element sizes: 1, 4, 16, > `DA_INLINE_BYTES`.
-* Push/pop transition (SBO -> heap -> SBO via `shrink_to_fit`).
-* `da_reserve` behavior and failure modes (simulate OOM via environment where possible).
-* Overflow protection: attempt to reserve extremely large capacities and assert `DYN_ERR_OVERFLOW`.
-
-### Simple test runner
-
-You can create a small test runner in `tests/test_dynamic_array.c` that uses `assert()` to validate behavior; build with the Makefile.
-
-### Benchmarks ideas
-
-* Micro-benchmark `push_back` throughput for element sizes 1..64 and compare to a singly-linked-list stack.
-* Measure number of allocations for typical workloads and average wall-clock time per push.
-
-> For reproducible results, compile with `-O2` and use `clock_gettime(CLOCK_MONOTONIC, ...)` to measure.
-
----
-
-## Contributing
-
-Contributions are welcome.
-
-Guidelines:
-
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feat/your-feature`.
-3. Add tests that demonstrate the new behavior or reproduce a bug.
-4. Open a PR with description, rationale, and performance notes (if relevant).
-
-Please keep the public API stable; document breaking changes in `CHANGELOG.md`.
-
----
-
 ## License
 
 This project is provided under the **MIT License**. Add a `LICENSE` file with the MIT text:
@@ -291,40 +247,5 @@ Permission is hereby granted, free of charge, to any person obtaining a copy
 ```
 
 (Replace `<Your Name>` and fill the full MIT text in `LICENSE`)
-
----
-
-## FAQ
-
-**Q: Why SBO?**
-A: SBO avoids heap allocations for small arrays — fewer allocations and better runtime behavior for typical small buffers.
-
-**Q: Why not call constructors/destructors?**
-A: Simplicity and C compatibility. The library stores raw bytes; callers manage complex element lifetimes.
-
-**Q: Is it thread-safe?**
-A: No. Wrap operations with your own synchronization for concurrent use.
-
-**Q: How to change SBO size?**
-A: Define `DA_INLINE_BYTES` before including the header or compile with `-DDA_INLINE_BYTES=512`.
-
-**Q: Can I keep pointers returned by `da_data()` across pushes?**
-A: No — mutating operations that reallocate will invalidate pointers. Use indices or copy required data out.
-
----
-
-## CHANGELOG (starter)
-
-```
-# Changelog
-
-## [Unreleased]
-- Add `da_pop_back` and `da_back`.
-- Improve SBO transitions and overflow handling.
-- Add more documentation and examples.
-
-## [0.1.0] - 2025-08-25
-- Initial release: create, destroy, push_back, reserve, shrink_to_fit, clear.
-```
 
 ---

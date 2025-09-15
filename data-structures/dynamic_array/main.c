@@ -4,16 +4,17 @@
 #include <stdio.h>
 
 int main(void) {
-  DynamicArray *a = da_create(sizeof(char));
-  assert(a);
+  DynamicArray *vec = da_create(sizeof(char));
+  assert(vec);
 
   const char *msg = "abcde";
   for (const char *p = msg; *p; ++p) {
-    int st = da_push_back(a, p);
+    int st = da_push_back(vec, p);
     assert(st == DYN_OK);
   }
 
-  fwrite(da_cdata(a), da_elem_size(a), da_size(a), stdout); // imprime abcde
-  da_destroy(a);
+  fwrite(da_cdata(vec), da_elem_size(vec), da_size(vec),
+         stdout); // imprime abcde
+  da_destroy(vec);
   return 0;
 }
