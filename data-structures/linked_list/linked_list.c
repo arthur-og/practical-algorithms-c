@@ -1,37 +1,21 @@
+#include "linked_list.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void print_int(void *data, int len) {
-  printf("       %d       ", *(int *)data);
-}
-void print_float(void *data, int len) { printf("     %f    ", *(float *)data); }
-void print_string(void *data, int len) { printf("    %s   ", (char *)data); }
-
-void print_int_arr(void *data, int len) {
-
-  int count = len / sizeof(int);
-  printf("    [");
-  for (int i = 0; i < count; ++i) {
-    printf(" %d ", ((int *)data)[i]);
-  }
-  printf("]     ");
-}
-
-typedef void (*PrintFunc)(void *data, int len);
-
-typedef struct Node {
+struct node {
   void *data;
+  int data_reference;
   int data_len;
-  struct Node *next;
+  struct node *next;
   PrintFunc print_pointer;
-} Node;
+};
 
-typedef struct {
+struct linkedlist {
   Node *head;
   Node *tail;
   int size;
-} LinkedList;
+};
 
 Node *create_node(void *dt, int len, PrintFunc print_func) {
 
@@ -50,11 +34,35 @@ Node *create_node(void *dt, int len, PrintFunc print_func) {
 
   memcpy(node->data, dt, len);
   node->data_len = len;
+  node->data_reference = 0;
   node->next = NULL;
   node->print_pointer = print_func;
   return node;
 }
 
+static Node *create_reference_node(void *dt, size_t len, PrintFunc print_func) {
+  Node *node = malloc(sizeof(Node));
+  if (node == NULL) {
+    printf("node aloccation fail");
+    return NULL;
+  }
+  node->data = dt;
+  node->data_len = len;
+  node->next = NULL;
+  node->print_pointer = print_func;
+  node->data_reference = 1;
+  return node;
+}
+static void append(LinkedList *list, Node *node) {
+  if (list->size == 0) {
+    list->head = node;
+    list->tail = node;
+  } else {
+    list->tail->next = node;
+    list->tail = node;
+  }
+  list->size++;
+}
 LinkedList *create_list() {
   LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
   if (list == NULL) {
@@ -67,19 +75,21 @@ LinkedList *create_list() {
   return list;
 }
 
-void list_append(LinkedList *list, void *dt, int len, PrintFunc print_func) {
+int list_append(LinkedList *list, void *dt, int len, PrintFunc print_func) {
   Node *node = create_node(dt, len, print_func);
   if (node == NULL)
-    return;
+    return -1;
+  append(list, node);
+  return 0;
+}
 
-  if (list->size == 0) {
-    list->head = node;
-    list->tail = node;
-  } else {
-    list->tail->next = node;
-    list->tail = node;
-  }
-  list->size++;
+int list_append_reference(LinkedList *list, void *dt, int len,
+                          PrintFunc print_func) {
+  Node *node = create_reference_node(dt, len, print_func);
+  if (node == NULL)
+    return 91;
+  append(list, node);
+  return 0;
 }
 
 void list_print(void *lista, int len) {
@@ -140,55 +150,51 @@ void free_list(LinkedList *list) {
 
   while (current != NULL) {
     next_node = current->next;
-    free(current->data);
+    if (current->data_reference == 0) {
+      // Só libera 'data' se NÃO for uma referência
+      free(current->data);
+    }
+
     free(current);
     current = next_node;
   }
   free(list);
 }
 
-int list_len(LinkedList *list) {
+void free_list_shallow(LinkedList *list) {
+  if (list == NULL)
+    return;
+
+  Node *current = list->head;
+  Node *next_node;
+
+  while (current != NULL) {
+    next_node = current->next;
+    // not free the data
+
+    free(current);
+    current = next_node;
+  }
+  free(list);
+}
+
+int list_get_node_count(LinkedList *list) {
+  if (list == NULL)
+    return -1;
+  return list->size;
+}
+
+int list_get_total_bytes(LinkedList *list) {
   if (list == NULL)
     return -1;
 
   Node *current = list->head;
-  Node *next_node;
-  int len = 0;
+  int total = 0;
 
   while (current != NULL) {
-    next_node = current->next;
-    len += current->data_len;
-    current = next_node;
+    total += current->data_len;
+    current = current->next;
   }
 
-  return len;
-}
-
-int main() {
-  int value1 = 12;
-  float value2 = 12.123;
-  char str1[] = "star wars";
-  float value4 = 129.78;
-  int arr[] = {1, 12, 5, 6, 9};
-  char str2[] = "horcrux";
-
-  LinkedList *list = create_list();
-
-  list_append(list, &value1, sizeof(value1), print_int);
-  list_append(list, &value2, sizeof(value2), print_float);
-
-  LinkedList *list2 = create_list();
-
-  list_append(list2, &str1, sizeof(str1), print_string);
-  list_append(list2, &value4, sizeof(value4), print_float);
-  list_append(list2, arr, sizeof(arr), print_int_arr);
-  list_append(list, list2, list_len(list2), list_print);
-
-  list_append(list, str2, sizeof(str2), print_string);
-
-  list_print(list, 0);
-  putchar('\n');
-  // list_inverter(list);
-  //  printf("inverted:\n");
-  //  list_print(list, 2);
+  return total;
 }

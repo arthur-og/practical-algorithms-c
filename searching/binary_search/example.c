@@ -6,6 +6,10 @@
  * User inputs a number to search for in a sorted array.
  * Program prints the index of the element if found, or -1 if not.
  */
+
+int comp_int(const void *a, const void *b) {
+  return *(int *)a < *(int *)b ? 1 : *(int *)a > *(int *)b ? -1 : 0;
+}
 int main() {
   // Example sorted array
   const int array[] = {1, 2, 3, 4, 5, 6};
@@ -18,7 +22,8 @@ int main() {
   scanf("%d", &num);
 
   // Perform binary search
-  ptrdiff_t index = binary_search(array, len, num);
+  ptrdiff_t index =
+      binary_search((void *)array, len, sizeof(array[0]), &num, comp_int);
 
   // Print the result
   if (index >= 0)

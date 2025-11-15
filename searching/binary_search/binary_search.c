@@ -1,20 +1,22 @@
 #include "binary_search.h"
-
+#include <stddef.h>
+#include <string.h>
 /*
  * Iterative binary search implementation
  */
-ptrdiff_t binary_search(const int array[], size_t len, int num) {
-  size_t begin = 0;
-  size_t end = len;
+ptrdiff_t binary_search(void *begin, size_t len, size_t elem_size,
+                        const void *element, compfunc comp) {
+  void *end = begin + elem_size * len;
 
   while (begin < end) {
-    size_t mid = begin + (end - begin) / 2;
-    int attpt = array[mid];
+    void *mid = begin + (end - begin) / 2;
+    void *attpt;
+    memcpy(attpt, mid, len);
 
-    if (attpt == num)
+    if (comp(attpt, element) == 0)
       return (ptrdiff_t)mid; // Element found, return index
 
-    if (attpt < num)
+    if (comp(attpt, element) == 1)
       begin = mid + 1; // Search right half
     else
       end = mid; // Search left half

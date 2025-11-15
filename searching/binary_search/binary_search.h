@@ -18,6 +18,10 @@
  *     Implements an iterative binary search on a sorted array of integers.
  *     The array must be sorted in ascending order.
  */
-ptrdiff_t binary_search(const int array[], size_t len, int num);
+
+typedef int (*compfunc)(const void *a, const void *b);
+
+ptrdiff_t binary_search(void *begin, size_t len, size_t elemt_size,
+                        const void *element, compfunc comp);
 
 #endif // BINARY_SEARCH_H
